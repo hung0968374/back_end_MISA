@@ -6,6 +6,10 @@ namespace MISA.Common.Model
 {
     public class ServiceResult
     {
+        public ServiceResult()
+        {
+            Success = true;
+        }
         /// <summary>
         /// Trạng thái service (true: thành công, false: thất bại)
         /// </summary>

@@ -25,15 +25,17 @@ namespace MISA.cukcuk.api.Controllers
         [HttpGet]
         public IActionResult GetCustomers()
         {
-            var connectionString = "" +
-            "Host = 103.124.92.43;" +
-            "Port = 3306;" +
-            "Database = MS1_17_NguyenHuuHung_CukCuk;" +
-            "User Id = nvmanh;" +
-            "Password = 12345678;";
-            IDbConnection dbConnection = new MySqlConnection(connectionString);
-            var customers = dbConnection.Query<object>("SELECT * FROM Customer");
-            return Ok(customers);
+            CustomerService customerService = new CustomerService();
+            var serviceResult = customerService.GetCustomers();
+            var customers = serviceResult.Data as List<Customer>;
+            if (customers.Count == 0)
+            {
+                return StatusCode(204, serviceResult.Data);
+            }
+            else
+            {
+                return StatusCode(200, serviceResult.Data);
+            }
         }
         /// <summary>
         /// Thêm mới khách hàng

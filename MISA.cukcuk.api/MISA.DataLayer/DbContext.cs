@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using MySql.Data.MySqlClient;
+using MISA.Common.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,21 +21,26 @@ namespace MISA.DataLayer
         #endregion
 
         #region Constructor
-
+        public DbContext()
+        {
+            _dbConnection = new MySqlConnector.MySqlConnection(_connectionString);
+        }
         #endregion
 
         #region method
-        /// <summary>
-        /// Lấy toàn bộ dữ liệu
-        /// </summary>
-        /// <returns>collection object</returns>
-        /// createdBy: NHHung
-        public IEnumerable<object> GetAll()
+        public IEnumerable<MISAEntity> GetAll<MISAEntity>()
         {
-            _dbConnection = new MySqlConnection(_connectionString);
-            var customers = _dbConnection.Query<object>("Proc_GetCustomers", commandType: CommandType.StoredProcedure);
-            return customers;
+            var className = typeof(MISAEntity).Name;
+            var entities = _dbConnection.Query<MISAEntity>($"select * from {className}", commandType: CommandType.Text);
+            return entities;
         }
+        public IEnumerable<MISAEntity> GetAll<MISAEntity>(string sqlCommand, CommandType commandType = CommandType.Text)
+        {
+            var className = typeof(MISAEntity).Name;
+            var entities = _dbConnection.Query<MISAEntity>(sqlCommand, commandType: CommandType.Text);
+            return entities;
+        }
+        
         /// <summary>
         /// Them moi ban ghi vao object
         /// </summary>
@@ -44,8 +49,6 @@ namespace MISA.DataLayer
         /// CreatedBy: NhHung
         public int InsertObject(object entity)
         {
-
-            _dbConnection = new MySqlConnection(_connectionString);
             var res = _dbConnection.Execute("Proc_InsertCustomer", param: entity, commandType: CommandType.StoredProcedure);
             return res;
         }
@@ -57,7 +60,6 @@ namespace MISA.DataLayer
         /// <returns>true: đã tồn tại, false: chưa tồn tại</returns>
         public bool checkCustomerCodeExists (string customerCode)
         {
-            _dbConnection = new MySqlConnection(_connectionString);
             var sql = $"SELECT CustomerCode From Customer AS C where C.CustomerCode = '{customerCode}'";
             var customerCodeExists = _dbConnection.Query<string>(sql).FirstOrDefault();
             if (customerCodeExists != null)
@@ -77,7 +79,6 @@ namespace MISA.DataLayer
         /// <returns>true: đã tồn tại, false: chưa tồn tại</returns>
         public bool checkCustomerPhoneNumberExists(string phoneNumber)
         {
-            _dbConnection = new MySqlConnection(_connectionString);
             var sqlSelectPhoneNumber = $"SELECT PhoneNumber From Customer AS C where C.PhoneNumber = '{phoneNumber}'";
             var phoneNumberExists = _dbConnection.Query<string>(sqlSelectPhoneNumber).FirstOrDefault();
             if (phoneNumberExists != null)

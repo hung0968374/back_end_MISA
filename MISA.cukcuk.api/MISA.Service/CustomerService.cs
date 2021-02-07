@@ -8,6 +8,13 @@ namespace MISA.Service
 {
     public class CustomerService
     {
+        public ServiceResult GetCustomers()
+        {
+            var serviceResult = new ServiceResult();
+            DbContext dbContext = new DbContext();
+            serviceResult.Data = dbContext.GetAll<Customer>("Proc_GetCustomers", System.Data.CommandType.StoredProcedure);
+            return serviceResult;
+        }
         public ServiceResult InsertCustomer(Customer customer)
         {
             var serviceResult = new ServiceResult();

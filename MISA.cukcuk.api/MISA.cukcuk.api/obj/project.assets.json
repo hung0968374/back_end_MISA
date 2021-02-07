@@ -241,6 +241,15 @@
           "lib/net5.0/Zstandard.Net.dll": {}
         }
       },
+      "MySqlConnector/1.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/MySqlConnector.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/MySqlConnector.dll": {}
+        }
+      },
       "SSH.NET/2020.0.0-beta1": {
         "type": "package",
         "dependencies": {
@@ -515,7 +524,7 @@
         "dependencies": {
           "Dapper": "2.0.78",
           "MISA.Common": "1.0.0",
-          "MySql.Data": "8.0.23"
+          "MySqlConnector": "1.2.1"
         },
         "compile": {
           "bin/placeholder/MISA.DataLayer.dll": {}
@@ -962,6 +971,36 @@
         "lib/netstandard2.1/Zstandard.Net.dll",
         "mysql.data.8.0.23.nupkg.sha512",
         "mysql.data.nuspec"
+      ]
+    },
+    "MySqlConnector/1.2.1": {
+      "sha512": "B+uQUXBhWibjQBaOe+GXXTEm573HGQU2M2NR8BKdyEEBxzGui8OVTL+dtW5Jg4FwovvW4Y1uMOKeBdmI5tQltA==",
+      "type": "package",
+      "path": "mysqlconnector/1.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/MySqlConnector.dll",
+        "lib/net45/MySqlConnector.xml",
+        "lib/net461/MySqlConnector.dll",
+        "lib/net461/MySqlConnector.xml",
+        "lib/net471/MySqlConnector.dll",
+        "lib/net471/MySqlConnector.xml",
+        "lib/net5.0/MySqlConnector.dll",
+        "lib/net5.0/MySqlConnector.xml",
+        "lib/netcoreapp2.1/MySqlConnector.dll",
+        "lib/netcoreapp2.1/MySqlConnector.xml",
+        "lib/netcoreapp3.1/MySqlConnector.dll",
+        "lib/netcoreapp3.1/MySqlConnector.xml",
+        "lib/netstandard1.3/MySqlConnector.dll",
+        "lib/netstandard1.3/MySqlConnector.xml",
+        "lib/netstandard2.0/MySqlConnector.dll",
+        "lib/netstandard2.0/MySqlConnector.xml",
+        "lib/netstandard2.1/MySqlConnector.dll",
+        "lib/netstandard2.1/MySqlConnector.xml",
+        "logo.png",
+        "mysqlconnector.1.2.1.nupkg.sha512",
+        "mysqlconnector.nuspec"
       ]
     },
     "SSH.NET/2020.0.0-beta1": {

@@ -55,3 +55,4 @@ E:\Học Tập\my project\misa\back_end\MISA.cukcuk.api\MISA.cukcuk.api\bin\Debu
 E:\Học Tập\my project\misa\back_end\MISA.cukcuk.api\MISA.cukcuk.api\bin\Debug\net5.0\MISA.Common.pdb
 E:\Học Tập\my project\misa\back_end\MISA.cukcuk.api\MISA.cukcuk.api\bin\Debug\net5.0\MISA.Service.pdb
 E:\Học Tập\my project\misa\back_end\MISA.cukcuk.api\MISA.cukcuk.api\bin\Debug\net5.0\MISA.DataLayer.pdb
+E:\Học Tập\my project\misa\back_end\MISA.cukcuk.api\MISA.cukcuk.api\bin\Debug\net5.0\MySqlConnector.dll
