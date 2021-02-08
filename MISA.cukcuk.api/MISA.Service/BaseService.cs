@@ -1,12 +1,13 @@
 ﻿using MISA.Common.Model;
 using MISA.DataLayer;
+using MISA.Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace MISA.Service
 {
-    public class BaseService<MISAEntity>
+    public class BaseService<MISAEntity>:IBaseService<MISAEntity>
     {
         public virtual ServiceResult GetData()
         {
@@ -22,20 +23,32 @@ namespace MISA.Service
         /// <returns>Trả về kết quả ServiceResult</returns>
         public virtual ServiceResult Insert(MISAEntity entity)
         {
-            var dbContext = new DbContext<MISAEntity>();
             var serviceResult = new ServiceResult();
-            var isValid = true;
+            var dbContext = new DbContext<MISAEntity>();
+            var errorMsg = new ErrorMsg(); 
             //Xử lý nghiệp vụ
-            isValid = ValidateData(entity);
+            var isValid = ValidateData(entity, errorMsg);
             //Gửi lên dataLayer thêm mới vào database
-            if (isValid)
+            if (isValid == true)
             {
-                serviceResult.Data = dbContext.InsertObject(entity);
+                var res = dbContext.InsertObject(entity);
+                if (res > 0)
+                {
+                    serviceResult.Success = true;
+                    serviceResult.Data = res;
+                    return serviceResult;
+                }
+                else
+                {
+                    serviceResult.Success = true;
+                    serviceResult.Data = res;
+                    return serviceResult;
+                } 
             }
             else
             {
                 serviceResult.Success = false;
-                serviceResult.MISACode = "999";
+                serviceResult.Data = errorMsg;
             }
             return serviceResult;
         }
@@ -44,9 +57,9 @@ namespace MISA.Service
         /// </summary>
         /// <param name="entity">Đối tượng cần validate</param>
         /// <returns>true: dữ liệu hợp lệ, false: dữ liệu k hợp lệ</returns>
-        private bool ValidateData(MISAEntity entity)
+        protected virtual bool ValidateData(MISAEntity entity, ErrorMsg errorMsg = null)
         {
-            return false;
+            return true;
         }
     }
 }

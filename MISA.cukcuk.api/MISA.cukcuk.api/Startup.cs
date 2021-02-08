@@ -9,6 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MISA.Common.Model;
+using MISA.Service;
+using MISA.Service.Interfaces;
+using MISA.Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +37,10 @@ namespace MISA.cukcuk.api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MISA.cukcuk.api", Version = "v1" });
             });
+            // Cấu hình DI
+            services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
+            services.AddScoped<ICustomerService, CustomerService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

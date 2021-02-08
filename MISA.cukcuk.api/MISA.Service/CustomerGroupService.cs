@@ -5,12 +5,9 @@ namespace MISA.Service
 {
     public class CustomerGroupService:BaseService<CustomerGroup>
     {
-        public ServiceResult InsertCustomerGroup(CustomerGroup customerGroup)
+        protected override bool ValidateData(CustomerGroup entity, ErrorMsg errorMsg = null)
         {
-            var serviceResult = new ServiceResult();
-            var dbContext = new DbContext<CustomerGroup>();
-            serviceResult.Data = dbContext.InsertObject(customerGroup);
-            return serviceResult;
+            return true;
         }
     }
 }
