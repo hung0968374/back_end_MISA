@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MISA.Common.Model;
+using MISA.DataLayer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace MISA.DataLayer
 {
-    public class DbContext<MISAEntity>
+    public class DbContext<MISAEntity>:IBaseData<MISAEntity>
     {
         #region DECLARE
         protected string _connectionString = "" +

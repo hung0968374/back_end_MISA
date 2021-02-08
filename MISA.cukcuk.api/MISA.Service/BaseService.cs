@@ -1,5 +1,6 @@
 ﻿using MISA.Common.Model;
 using MISA.DataLayer;
+using MISA.DataLayer.Interfaces;
 using MISA.Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,19 @@ namespace MISA.Service
 {
     public class BaseService<MISAEntity>:IBaseService<MISAEntity>
     {
+        IBaseData<MISAEntity> _dbContext;
+        /// <summary>
+        /// Khởi tạo đường dẫn đến dataLayer
+        /// </summary>
+        /// <param name="dbContext"></param>
+        public BaseService(IBaseData<MISAEntity> dbContext)
+        {
+            _dbContext = dbContext;
+        }
         public virtual ServiceResult GetData()
         {
             var serviceResult = new ServiceResult();
-            var dbContext = new DbContext<MISAEntity>();
-            serviceResult.Data = dbContext.GetAll();
+            serviceResult.Data = _dbContext.GetAll();
             return serviceResult;
         }
         /// <summary>
@@ -24,14 +33,13 @@ namespace MISA.Service
         public virtual ServiceResult Insert(MISAEntity entity)
         {
             var serviceResult = new ServiceResult();
-            var dbContext = new DbContext<MISAEntity>();
             var errorMsg = new ErrorMsg(); 
             //Xử lý nghiệp vụ
             var isValid = ValidateData(entity, errorMsg);
             //Gửi lên dataLayer thêm mới vào database
             if (isValid == true)
             {
-                var res = dbContext.InsertObject(entity);
+                var res = _dbContext.InsertObject(entity);
                 if (res > 0)
                 {
                     serviceResult.Success = true;

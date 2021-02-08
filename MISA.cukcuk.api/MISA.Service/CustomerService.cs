@@ -1,12 +1,17 @@
 ﻿using MISA.Common.Model;
 using MISA.DataLayer;
+using MISA.DataLayer.Interfaces;
 using MISA.Service.Interfaces;
 
 namespace MISA.Service
 {
     public class CustomerService : BaseService<Customer>, ICustomerService
     {
-      
+
+        public CustomerService(IBaseData<Customer> DbContext) : base(DbContext)
+        {
+
+        } 
         public ServiceResult GetCustomersTop100()
         {
             var serviceResult = new ServiceResult();

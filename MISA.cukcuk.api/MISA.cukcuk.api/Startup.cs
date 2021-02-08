@@ -9,6 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MISA.Common.Model;
+using MISA.DataLayer;
+using MISA.DataLayer.Interfaces;
+using MISA.DataLayer.InterMiLan;
 using MISA.Service;
 using MISA.Service.Interfaces;
 using MISA.Service.Services;
@@ -40,6 +43,7 @@ namespace MISA.cukcuk.api
             // Cấu hình DI
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped(typeof(IBaseData<>), typeof(DbContext2<>));
 
         }
 
