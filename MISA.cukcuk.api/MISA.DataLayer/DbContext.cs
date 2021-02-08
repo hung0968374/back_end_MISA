@@ -8,16 +8,16 @@ using System.Text;
 
 namespace MISA.DataLayer
 {
-    public class DbContext
+    public class DbContext<MISAEntity>
     {
         #region DECLARE
-        string _connectionString = "" +
+        protected string _connectionString = "" +
             "Host = 103.124.92.43;" +
             "Port = 3306;" +
             "Database = MS1_17_NguyenHuuHung_CukCuk;" +
             "User Id = nvmanh;" +
             "Password = 12345678;";
-        IDbConnection _dbConnection;
+        protected IDbConnection _dbConnection;
         #endregion
 
         #region Constructor
@@ -26,21 +26,38 @@ namespace MISA.DataLayer
             _dbConnection = new MySqlConnector.MySqlConnection(_connectionString);
         }
         #endregion
+        public IEnumerable<MISAEntity> GetAll()
+        {
+            var className = typeof(MISAEntity).Name;
 
-        #region method
-        public IEnumerable<MISAEntity> GetAll<MISAEntity>()
-        {
-            var className = typeof(MISAEntity).Name;
             var entities = _dbConnection.Query<MISAEntity>($"select * from {className}", commandType: CommandType.Text);
+
             return entities;
         }
-        public IEnumerable<MISAEntity> GetAll<MISAEntity>(string sqlCommand, CommandType commandType = CommandType.Text)
+        #region method
+        public IEnumerable<MISAEntity> GetAll(string sqlCommand , CommandType commandType = CommandType.Text)
+        {
+            var entities = _dbConnection.Query<MISAEntity>(sqlCommand, commandType: commandType);
+            return entities;
+        }
+        /// <summary>
+        /// Lấy dữ liệu theo nhiều tiêu chí
+        /// </summary>
+        /// <typeparam name="MISAEntity">Type của object</typeparam>
+        /// <param name="sqlCommand">Câu lệnh truyền vào</param>
+        /// <param name="parameters">Tham số truyền vào</param>
+        /// <param name="commandType"></param>
+        /// <returns></returns>
+        public IEnumerable<MISAEntity> GetData(string sqlCommand = null, object parameters = null, CommandType commandType = CommandType.Text)
         {
             var className = typeof(MISAEntity).Name;
-            var entities = _dbConnection.Query<MISAEntity>(sqlCommand, commandType: CommandType.Text);
-            return entities;
+            if (sqlCommand == null)
+            {
+                sqlCommand = $"Select * from {className}";
+            }
+            var data = _dbConnection.Query<MISAEntity>(sqlCommand, param: parameters, commandType: commandType);
+            return data;
         }
-        
         /// <summary>
         /// Them moi ban ghi vao object
         /// </summary>
@@ -49,46 +66,54 @@ namespace MISA.DataLayer
         /// CreatedBy: NhHung
         public int InsertObject(object entity)
         {
-            var res = _dbConnection.Execute("Proc_InsertCustomer", param: entity, commandType: CommandType.StoredProcedure);
+            var sqlPropName = string.Empty;
+            var sqlPropValue = string.Empty;
+            var className = typeof(MISAEntity).Name;
+            // Lấy các property của object
+            var properties = typeof(MISAEntity).GetProperties();
+            // Duyệt property, lấy tên và giá trị của property
+            //(tên là tên param trong câu truy vấn sql)
+            // (value: giá trị là giá trị param tương ứng trong câu lênh SQL)
+
+            foreach (var property in properties)
+            {
+                var propName = property.Name;
+                var propValue = property.GetValue(entity);
+                sqlPropName = sqlPropName + $",{propName}";
+                if (property.PropertyType == typeof(Guid) || property.PropertyType == typeof(string))
+                {
+                    if (propName.ToLower() == $"{className}Id".ToLower())
+                        sqlPropValue = sqlPropValue + $",'{Guid.NewGuid()}'";
+                    else
+                        sqlPropValue = sqlPropValue + $",'{propValue}'";
+                }
+                else if (property.PropertyType == typeof(Guid?)) {
+                    if (propValue == null)
+                    {
+                        sqlPropValue = sqlPropValue + $",NULL";
+                    }
+                    else
+                    {
+                        sqlPropValue = sqlPropValue + $",'{propValue}'";
+                    }
+                }
+                else if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
+                {
+                    var dateTime = (DateTime)propValue;
+                    string dateTimeString = dateTime.ToString("yyyy-MM-dd hh:mm:ss");
+                    sqlPropValue = sqlPropValue + $",'{dateTimeString}'";
+                }
+                else
+                {
+                    sqlPropValue = sqlPropValue + $",{propValue}";
+                }
+            }
+            sqlPropName = sqlPropName.Remove(0, 1);
+            sqlPropValue = sqlPropValue.Remove(0, 1);
+            var sqlInsertFinal = $"insert into {className} ({sqlPropName}) value ({sqlPropValue})";
+            var res = _dbConnection.Execute(sqlInsertFinal, commandType: CommandType.Text);
             return res;
         }
         #endregion
-        /// <summary>
-        /// Kiểm tra mã khách hàng xem đã tồn tại hay chưa
-        /// </summary>
-        /// <param name="customerCode">Mã cần kiểm tra</param>
-        /// <returns>true: đã tồn tại, false: chưa tồn tại</returns>
-        public bool checkCustomerCodeExists (string customerCode)
-        {
-            var sql = $"SELECT CustomerCode From Customer AS C where C.CustomerCode = '{customerCode}'";
-            var customerCodeExists = _dbConnection.Query<string>(sql).FirstOrDefault();
-            if (customerCodeExists != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra số điện thoại của khách hàng xem đã tồn tại hay chưa
-        /// </summary>
-        /// <param name="customerCode">Số cần kiểm tra</param>
-        /// <returns>true: đã tồn tại, false: chưa tồn tại</returns>
-        public bool checkCustomerPhoneNumberExists(string phoneNumber)
-        {
-            var sqlSelectPhoneNumber = $"SELECT PhoneNumber From Customer AS C where C.PhoneNumber = '{phoneNumber}'";
-            var phoneNumberExists = _dbConnection.Query<string>(sqlSelectPhoneNumber).FirstOrDefault();
-            if (phoneNumberExists != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 }

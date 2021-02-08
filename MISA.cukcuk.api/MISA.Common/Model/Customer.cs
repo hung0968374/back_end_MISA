@@ -68,7 +68,7 @@ namespace MISA.Common.Model
         /// <summary>
         /// Ngày tạo khách hàng
         /// </summary>
-        public DateTime CreateDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         /// <summary>
         /// Người tạo
         /// </summary>

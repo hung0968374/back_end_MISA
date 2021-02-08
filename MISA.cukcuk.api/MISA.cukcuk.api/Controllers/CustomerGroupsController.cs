@@ -24,6 +24,24 @@ namespace MISA.cukcuk.api.Controllers
                 return StatusCode(200, serviceResult.Data);
             }
         }
+        public IActionResult PostCustomerGroup(CustomerGroup customerGroup)
+        {
+          
+            var customerService = new CustomerGroupService();
+            var res = customerService.InsertCustomerGroup(customerGroup);
+            if (res.Success == false)
+            {
+                return StatusCode(400, res.Data);
+            }
+            else if (res.Success == true && (int)res.Data > 0)
+            {
+                return StatusCode(201, res.Data);
+            }
+            else
+            {
+                return StatusCode(200, res.Data);
+            }
+        }
     }
 }
 

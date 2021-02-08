@@ -13,8 +13,15 @@ namespace MISA.Service
         public ServiceResult GetCustomerGroup()
         {
             var serviceResult = new ServiceResult();
-            var dbContext = new DbContext();
-            serviceResult.Data = dbContext.GetAll<CustomerGroup>();
+            var dbContext = new DbContext<CustomerGroup>();
+            serviceResult.Data = dbContext.GetAll();
+            return serviceResult;
+        }
+        public ServiceResult InsertCustomerGroup(CustomerGroup customerGroup)
+        {
+            var serviceResult = new ServiceResult();
+            var dbContext = new DbContext<CustomerGroup>();
+            serviceResult.Data = dbContext.InsertObject(customerGroup);
             return serviceResult;
         }
     }

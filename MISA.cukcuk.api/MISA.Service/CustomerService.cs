@@ -11,15 +11,23 @@ namespace MISA.Service
         public ServiceResult GetCustomers()
         {
             var serviceResult = new ServiceResult();
-            DbContext dbContext = new DbContext();
-            serviceResult.Data = dbContext.GetAll<Customer>("Proc_GetCustomers", System.Data.CommandType.StoredProcedure);
+            var dbContext = new CustomerRepostory();
+            serviceResult.Data = dbContext.GetData();
+            //serviceResult.Data = dbContext.GetData<Customer>(" SELECT * FROM Customer c WHERE c.CustomerCode LIKE CONCAT('%',@CustomerCode,'%') AND PhoneNumber LIKE CONCAT('%',@PhoneNumber,'%');", new { CustomerCode = "KH88617" , phoneNumber = "09"});
+            return serviceResult;
+        }
+        public ServiceResult GetCustomersTop100()
+        {
+            var serviceResult = new ServiceResult();
+            var dbContext = new CustomerRepostory();
+            serviceResult.Data = dbContext.GetCustomerTop100();
             return serviceResult;
         }
         public ServiceResult InsertCustomer(Customer customer)
         {
             var serviceResult = new ServiceResult();
             var errorMsg = new ErrorMsg();
-            DbContext dbContext = new DbContext();
+            var dbContext = new CustomerRepostory();
           
             // validate ma khach hang
             if (customer.CustomerCode == null || customer.CustomerCode == string.Empty)
