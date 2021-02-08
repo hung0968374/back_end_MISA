@@ -15,7 +15,7 @@ namespace MISA.DataLayer
         /// <returns></returns>
         public IEnumerable<Customer> GetCustomerTop100()
         {
-            return GetData("Select * from Customer limit 100");
+            return GetData("Select * from Customer limit 1");
         }
         /// <summary>
         /// Kiểm tra mã khách hàng xem đã tồn tại hay chưa

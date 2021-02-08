@@ -54,7 +54,7 @@ namespace MISA.cukcuk.api
                 
                 var errorMsg = new ErrorMsg();
                 errorMsg.DevMsg = exception.Message;
-                errorMsg.UserMsg = "Có lỗi xảy ra, hãy liên hệ MISA để giải quyết vấn đề";
+                errorMsg.UserMsg.Add("Có lỗi xảy ra, hãy liên hệ MISA để giải quyết vấn đề");
                 //await context.Response.WriteAsJsonAsync(new { error = exception.Message });
                 await context.Response.WriteAsJsonAsync(errorMsg);
             }));

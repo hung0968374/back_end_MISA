@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using MySql.Data.MySqlClient;
-using Dapper;
-using MISA.Service;
 using MISA.Common.Model;
+using MISA.Service;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,7 +20,7 @@ namespace MISA.cukcuk.api.Controllers
         public IActionResult GetCustomers()
         {
             CustomerService customerService = new CustomerService();
-            var serviceResult = customerService.GetCustomers();
+            var serviceResult = customerService.GetData();
             var customers = serviceResult.Data as List<Customer>;
             if (customers.Count == 0)
             {
@@ -45,28 +39,20 @@ namespace MISA.cukcuk.api.Controllers
         [HttpPost]
         public IActionResult PostCustomer(Customer customer)
         {
-            //try
-            //{
-                CustomerService customerService = new CustomerService();
-                var res = customerService.InsertCustomer(customer);
-                if (res.Success == false)
-                {
-                    return StatusCode(400, res.Data);
-                }
-                else if (res.Success == true && (int)res.Data > 0)
-                {
-                    return StatusCode(201, res.Data);
-                }
-                else
-                {
-                    return StatusCode(200, res.Data);
-                }
-            
-            //catch(Exception)
-            //{
-            //    return StatusCode(500, "Có lỗi xảy ra, vui lòng liên hệ MISA để được trợ giúp");
-            //}
-            
+            CustomerService customerService = new CustomerService();
+            var res = customerService.InsertCustomer(customer);
+            if (res.Success == false)
+            {
+                return StatusCode(400, res.Data);
+            }
+            else if (res.Success == true && (int)res.Data > 0)
+            {
+                return StatusCode(201, res.Data);
+            }
+            else
+            {
+                return StatusCode(200, res.Data);
+            }
         }
     }
 }

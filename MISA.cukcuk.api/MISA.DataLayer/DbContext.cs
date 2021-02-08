@@ -68,50 +68,34 @@ namespace MISA.DataLayer
         {
             var sqlPropName = string.Empty;
             var sqlPropValue = string.Empty;
+            var sqlPropParam = string.Empty;
             var className = typeof(MISAEntity).Name;
+            var sqlCommand = string.Empty;
             // Lấy các property của object
             var properties = typeof(MISAEntity).GetProperties();
             // Duyệt property, lấy tên và giá trị của property
             //(tên là tên param trong câu truy vấn sql)
             // (value: giá trị là giá trị param tương ứng trong câu lênh SQL)
-
+            DynamicParameters dynamicParameters = new DynamicParameters();
             foreach (var property in properties)
             {
                 var propName = property.Name;
                 var propValue = property.GetValue(entity);
+                if ((property.PropertyType == typeof(Guid) || property.PropertyType == typeof(Guid?)) && propName.ToLower() == $"{className}Id".ToLower())
+                {
+                    // Khi thêm mới thì sinh giá trị GUID mới cho khóa chính
+                    //propValue = Guid.NewGuid();
+                    property.SetValue(entity, Guid.NewGuid());
+                }
+                
                 sqlPropName = sqlPropName + $",{propName}";
-                if (property.PropertyType == typeof(Guid) || property.PropertyType == typeof(string))
-                {
-                    if (propName.ToLower() == $"{className}Id".ToLower())
-                        sqlPropValue = sqlPropValue + $",'{Guid.NewGuid()}'";
-                    else
-                        sqlPropValue = sqlPropValue + $",'{propValue}'";
-                }
-                else if (property.PropertyType == typeof(Guid?)) {
-                    if (propValue == null)
-                    {
-                        sqlPropValue = sqlPropValue + $",NULL";
-                    }
-                    else
-                    {
-                        sqlPropValue = sqlPropValue + $",'{propValue}'";
-                    }
-                }
-                else if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
-                {
-                    var dateTime = (DateTime)propValue;
-                    string dateTimeString = dateTime.ToString("yyyy-MM-dd hh:mm:ss");
-                    sqlPropValue = sqlPropValue + $",'{dateTimeString}'";
-                }
-                else
-                {
-                    sqlPropValue = sqlPropValue + $",{propValue}";
-                }
+                sqlPropParam = sqlPropParam + $",@{propName}";
+                //dynamicParameters.Add($"@{propName}", propValue);
             }
             sqlPropName = sqlPropName.Remove(0, 1);
-            sqlPropValue = sqlPropValue.Remove(0, 1);
-            var sqlInsertFinal = $"insert into {className} ({sqlPropName}) value ({sqlPropValue})";
-            var res = _dbConnection.Execute(sqlInsertFinal, commandType: CommandType.Text);
+            sqlPropParam = sqlPropParam.Remove(0, 1);   
+            sqlCommand = $"Insert into {className} ({sqlPropName}) values ({sqlPropParam})";
+            var res = _dbConnection.Execute(sqlCommand,param: entity, commandType: CommandType.Text);
             return res;
         }
         #endregion

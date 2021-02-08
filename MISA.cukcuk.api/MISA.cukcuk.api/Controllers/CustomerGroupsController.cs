@@ -13,7 +13,7 @@ namespace MISA.cukcuk.api.Controllers
         public IActionResult Get()
         {
             var customerGroupService = new CustomerGroupService();
-            var serviceResult = customerGroupService.GetCustomerGroup();
+            var serviceResult = customerGroupService.GetData();
             var customerGroups = serviceResult.Data as List<CustomerGroup>;
             if (customerGroups.Count == 0)
             {
@@ -24,6 +24,7 @@ namespace MISA.cukcuk.api.Controllers
                 return StatusCode(200, serviceResult.Data);
             }
         }
+        [HttpPost]
         public IActionResult PostCustomerGroup(CustomerGroup customerGroup)
         {
           
